@@ -1,0 +1,20 @@
+stages:
+  - create_zip
+
+create_zip:
+  stage: create_zip
+  variables:
+    SOURCE_DIR: "your_source_directory"   # Replace with the path to the directory you want to zip
+    ZIP_FILENAME: "output.zip"            # Replace with the desired zip file name
+  only:
+    changes:
+      - "${SOURCE_DIR}/**/*"              # Trigger the pipeline when changes occur in the specified directory or its subdirectories.
+  script:
+    - cd "${SOURCE_DIR}"
+    - zip -r "${ZIP_FILENAME}" .          # Zip the contents of the specified directory
+    - mv "${ZIP_FILENAME}" "${CI_PROJECT_DIR}/${ZIP_FILENAME}"   # Move the zip file to the root of the project
+  artifacts:
+    paths:
+      - "${ZIP_FILENAME}"
+  only:
+    - master    # Optionally, restrict pipeline execution to a specific branch.
